@@ -1,0 +1,1719 @@
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta name="Content-Style" content="text/css">
+<title>Vi Command &amp; Function Reference</title>
+</head>
+<body>
+
+<h1 align=center>Vi Command &amp; Function Reference</h1>
+<a href="#1. Author's Disclaimer">1. Author's Disclaimer</a><br>
+<a href="#2. Notation">2. Notation</a><br>
+<a href="#3. Basics">3. Basics</a><br>
+<a href="#3.1. Bourne Shell">3.1. Bourne Shell</a><br>
+<a href="#3.2. The C Shell">3.2. The C Shell</a><br>
+<a href="#4. Normal Commands">4. Normal Commands</a><br>
+<a href="#4.1. Entry and Exit">4.1. Entry and Exit</a><br>
+<a href="#4.2. Cursor and Page Motion">4.2. Cursor and Page Motion</a><br>
+<a href="#4.3. Searches">4.3. Searches</a><br>
+<a href="#4.4. Text Insertion">4.4. Text Insertion</a><br>
+<a href="#4.5. Text Deletion">4.5. Text Deletion</a><br>
+<a href="#4.6. Text Replacement">4.6. Text Replacement</a><br>
+<a href="#4.7. Moving Text">4.7. Moving Text</a><br>
+<a href="#4.8. Miscellaneous Commands">4.8. Miscellaneous Commands</a><br>
+<a href="#4.9. Special Insert Characters">4.9. Special Insert Characters</a><br>
+<a href="#5. : Commands">5. : Commands</a><br>
+<a href="#6. Special Arrangements for Startup">6. Special Arrangements for Startup</a><br>
+<a href="#7. Set Commands">7. Set Commands</a><br>
+
+<hr>
+<!-- Creator     : groff version 1.17.2 -->
+<!-- CreationDate: Sun Nov 18 17:44:11 2007 -->
+<a name="1. Author's Disclaimer"></a>
+<h2>1. Author's Disclaimer</h2>
+
+<p>This document does not claim to be 100% complete. There
+are a few commands listed in the original document that I
+was unable to test either because I do not speak
+<b>lisp</b>, because they required programs we don't have,
+or because I wasn't able to make them work. In these cases I
+left the command out. The commands listed in this document
+have been tried and are known to work. It is expected that
+prospective users of this document will read it once to get
+the flavor of everything that <b>vi</b> can do and then use
+it as a reference document. Experimentation is recommended.
+If you don't understand a command, try it and see what
+happens.</p>
+
+<p>[Note: In revising this document, I have attempted to
+make it completely reflect version 2.12 of <b>vi</b>. It
+does not attempt to document the VAX version (version 3),
+but with one or two exceptions (wrapmargin, arrow keys)
+everything said about 2.12 should apply to 3.1. <i>Mark
+Horton</i>]</p>
+<a name="2. Notation"></a>
+<h2>2. Notation</h2>
+
+<p><b>[option]</b> is used to denote optional parts of a
+command. Many <b>vi</b> commands have an optional count.
+<b>[cnt]</b> means that an optional number may precede the
+command to multiply or iterate the command. <b>{variable
+item}</b> is used to denote parts of the command which must
+appear, but can take a number of different values.
+<b>&lt;character [-character]&gt;</b> means that the
+character or one of the characters in the range described
+between the two angle brackets is to be typed. For example
+<b>&lt;esc&gt;</b> means the <b>escape</b> key is to be
+typed. <b>&lt;a-z&gt;</b> means that a lower case letter is
+to be typed. <b>^&lt;character&gt;</b> means that the
+character is to be typed as a <b>control</b> character, that
+is, with the <b>&lt;cntl&gt;</b> key held down while
+simultaneously typing the specified character. In this
+document control characters will be denoted using the
+<i>upper case</i> character, but ^&lt;uppercase chr&gt; and
+^&lt;lowercase chr&gt; are equivalent. That is, for example,
+<b>&lt;^D&gt;</b> is equal to <b>&lt;^d&gt;</b>. The most
+common character abbreviations used in this list are as
+follows:</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;esc&gt;</td><td width="88%">
+escape, octal 033</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;cr&gt;</td><td width="88%">
+carriage return, ^M, octal 015</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;lf&gt;</td><td width="88%">
+linefeed ^J, octal 012</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;nl&gt;</td><td width="88%">
+newline, ^J, octal 012 (same as linefeed)</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;bs&gt;</td><td width="88%">
+backspace, ^H, octal 010</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;tab&gt;</td><td width="88%">
+tab, ^I, octal 011</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;bell&gt;</td><td width="88%">
+bell, ^G, octal 07</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;ff&gt;</td><td width="88%">
+formfeed, ^L, octal 014</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;sp&gt;</td><td width="88%">
+space, octal 040</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%">
+&lt;del&gt;</td><td width="88%">
+delete, octal 0177</td></table>
+<a name="3. Basics"></a>
+<h2>3. Basics</h2>
+
+<p>To run <b>vi</b> the shell variable <b>TERM</b> must be
+defined and exported to your environment. How you do this
+depends on which shell you are using. You can tell which
+shell you have by the character it prompts you for commands
+with. The Bourne shell prompts with `$', and the C shell
+prompts with `%'. For these examples, we will suppose that
+you are using an HP 2621 terminal, whose termcap name is
+``2621''.</p>
+<a name="3.1. Bourne Shell"></a>
+<h3>3.1. Bourne Shell</h3>
+
+<p>To manually set your terminal type to 2621 you would
+type:</p>
+<pre>     TERM=2621
+     export TERM
+</pre>
+
+<p>There are various ways of having this automatically or
+semi-automatically done when you log in. Suppose you usually
+dial in on a 2621. You want to tell this to the machine, but
+still have it work when you use a hardwired terminal. The
+recommended way, if you have the <b>tset</b> program, is to
+use the sequence</p>
+<pre>     tset -s -d 2621 &gt; tset$$
+     . tset$$
+     rm tset$$
+</pre>
+
+<p>in your .login (for csh) or the same thing using `.'
+instead of `source' in your .profile (for sh). The above
+line says that if you are dialing in you are on a 2621, but
+if you are on a hardwired terminal it figures out your
+terminal type from an on-line list.</p>
+<a name="3.2. The C Shell"></a>
+<h3>3.2. The C Shell</h3>
+
+<p>To manually set your terminal type to 2621 you would
+type:</p>
+<pre>     setenv TERM 2621
+</pre>
+
+<p>There are various ways of having this automatically or
+semi-automatically done when you log in. Suppose you usually
+dial in on a 2621. You want to tell this to the machine, but
+still have it work when you use a hardwired terminal. The
+recommended way, if you have the <b>tset</b> program, is to
+use the sequence</p>
+<pre>     tset -s -d 2621 &gt; tset$$
+     source tset$$
+     rm tset$$
+</pre>
+
+<p>in your .login.*</p>
+
+<p align=center></p>
+
+<p>The above line says that if you are dialing in you are
+on a 2621, but if you are on a hardwired terminal it figures
+out your terminal type from an on-line list.</p>
+<a name="4. Normal Commands"></a>
+<h2>4. Normal Commands</h2>
+
+<p><b>Vi</b> is a visual editor with a window on the file.
+What you see on the screen is <b>vi</b>'s current notion of
+what your file will contain, (at this point in the file),
+when it is written out. Most commands do not cause any
+change in the screen until the complete command is typed.
+Should you get confused while typing a command, you can
+abort the command by typing an &lt;del&gt; character. You
+will know you are back to command level when you hear a
+&lt;bell&gt;. Usually typing an &lt;esc&gt; will produce the
+same result. When <b>vi</b> gets an improperly formatted
+command it rings the &lt;bell&gt;. Following are the
+<b>vi</b> commands broken down by function.</p>
+<a name="4.1. Entry and Exit"></a>
+<h3>4.1. Entry and Exit</h3>
+
+<p>To enter <b>vi</b> on a particular <i>file</i>, type</p>
+<pre><b>     vi</b> <i>file
+</i></pre>
+
+<p>The file will be read in and the cursor will be placed
+at the beginning of the first line. The first screenfull of
+the file will be displayed on the terminal.</p>
+
+<p>To get out of the editor, type</p>
+<pre>     ZZ
+</pre>
+
+<p>If you are in some special mode, such as input mode or
+the middle of a multi-keystroke command, it may be necessary
+to type &lt;esc&gt; first.</p>
+<a name="4.2. Cursor and Page Motion"></a>
+<h3>4.2. Cursor and Page Motion</h3>
+
+<p><b>NOTE:</b> The arrow keys (see the next four commands)
+on certain kinds of terminals will not work with the PDP-11
+version of vi. The control versions or the hjkl versions
+will work on any terminal. Experienced users prefer the hjkl
+keys because they are always right under their fingers.
+Beginners often prefer the arrow keys, since they do not
+require memorization of which hjkl key is which. The
+mnemonic value of hjkl is clear from looking at the keyboard
+of an adm3a.</p>
+
+<p>[cnt]&lt;bs&gt; or [cnt]h or
+[cnt]<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Move the cursor to the left one character. Cursor stops at
+the left margin of the page. If cnt is given, these commands
+move that many spaces.</td></table>
+</p>
+
+<p>[cnt]^N or [cnt]j or [cnt] or
+[cnt]&lt;lf&gt;<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Move down one line. Moving off the screen scrolls the window
+to force a new line onto the screen. Mnemonic:
+<b>N</b>ext</td></table>
+</p>
+
+<p>[cnt]^P or [cnt]k or
+[cnt]<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Move up one line. Moving off the top of the screen forces
+new text onto the screen. Mnemonic:
+<b>P</b>revious</td></table>
+</p>
+
+<p>[cnt]&lt;sp&gt; or [cnt]l or
+[cnt]<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Move to the right one character. Cursor will not go beyond
+the end of the line.</td></table>
+</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]-</td><td width="76%">
+Move the cursor up the screen to the beginning of the next line. Scroll if necessary.</td></table>
+
+<p>[cnt]+ or [cnt]&lt;cr&gt;</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Move the cursor down the screen to the beginning of the next line. Scroll up if necessary.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]$</td><td width="76%">
+Move the cursor to the end of the line. If there is a count,
+move to the end of the line &quot;cnt&quot; lines forward in
+the file.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+^</td><td width="76%">
+Move the cursor to the beginning of the first word on the
+line.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+0</td><td width="76%">
+Move the cursor to the left margin of the current
+line.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]|</td><td width="76%">
+Move the cursor to the column specified by the count. The
+default is column zero.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]w</td><td width="76%">
+Move the cursor to the beginning of the next word. If there
+is a count, then move forward that many words and position
+the cursor at the beginning of the word. Mnemonic:
+next-<b>w</b>ord</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]W</td><td width="76%">
+Move the cursor to the beginning of the next word which
+follows a &quot;white space&quot; (&lt;sp&gt;,&lt;tab&gt;,
+or &lt;nl&gt;). Ignore other punctuation.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]b</td><td width="76%">
+Move the cursor to the preceding word. Mnemonic:
+<b>b</b>ackup-word</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]B</td><td width="76%">
+Move the cursor to the preceding word that is separated from
+the current word by a &quot;white space&quot;
+(&lt;sp&gt;,&lt;tab&gt;, or &lt;nl&gt;).</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]e</td><td width="76%">
+Move the cursor to the end of the current word or the end of
+the &quot;cnt&quot;'th word hence. Mnemonic:
+<b>e</b>nd-of-word</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]E</td><td width="76%">
+Move the cursor to the end of the current word which is
+delimited by &quot;white space&quot;
+(&lt;sp&gt;,&lt;tab&gt;, or &lt;nl&gt;).</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[line number]G</td><td width="76%">
+Move the cursor to the line specified. Of particular use are
+the sequences &quot;1G&quot; and &quot;G&quot;, which move
+the cursor to the beginning and the end of the file
+respectively. Mnemonic: <b>G</b>o-to</td></table>
+
+<p><b>NOTE:</b> The next four commands (^D, ^U, ^F, ^B) are
+not true motion commands, in that they cannot be used as the
+object of commands such as delete or change.</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]^D</td><td width="76%">
+Move the cursor down in the file by &quot;cnt&quot; lines (or the last &quot;cnt&quot; if a new count isn't given. The initial default is half a page.) The screen is simultaneously scrolled up. Mnemonic: <b>D</b>own</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]^U</td><td width="76%">
+Move the cursor up in the file by &quot;cnt&quot; lines. The
+screen is simultaneously scrolled down. Mnemonic:
+<b>U</b>p</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]^F</td><td width="76%">
+Move the cursor to the next page. A count moves that many
+pages. Two lines of the previous page are kept on the screen
+for continuity if possible. Mnemonic:
+<b>F</b>orward-a-page</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]^B</td><td width="76%">
+Move the cursor to the previous page. Two lines of the
+current page are kept if possible. Mnemonic:
+<b>B</b>ackup-a-page</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt](</td><td width="76%">
+Move the cursor to the beginning of the next sentence. A
+sentence is defined as ending with a &quot;.&quot;,
+&quot;!&quot;, or &quot;?&quot; followed by two spaces or a
+&lt;nl&gt;.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt])</td><td width="76%">
+Move the cursor backwards to the beginning of a
+sentence.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]}</td><td width="76%">
+Move the cursor to the beginning of the next paragraph. This
+command works best inside <b>nroff</b> documents. It
+understands two sets of <b>nroff</b> macros, <b>-ms</b> and
+<b>-mm</b>, for which the commands &quot;.IP&quot;,
+&quot;.LP&quot;, &quot;.PP&quot;, &quot;.QP&quot;,
+&quot;P&quot;, as well as the nroff command &quot;.bp&quot;
+are considered to be paragraph delimiters. A blank line also
+delimits a paragraph. The <b>nroff</b> macros that it
+accepts as paragraph delimiters is adjustable. See
+<b>paragraphs</b> under the <b>Set Commands</b>
+section.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]{</td><td width="76%">
+Move the cursor backwards to the beginning of a
+paragraph.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+]]</td><td width="76%">
+Move the cursor to the next &quot;section&quot;, where a
+section is defined by two sets of <b>nroff</b> macros,
+<b>-ms</b> and <b>-mm</b>, in which &quot;.NH&quot;,
+&quot;.SH&quot;, and &quot;.H&quot; delimit a section. A
+line beginning with a &lt;ff&gt;&lt;nl&gt; sequence, or a
+line beginning with a &quot;{&quot; are also considered to
+be section delimiters. The last option makes it useful for
+finding the beginnings of C functions. The <b>nroff</b>
+macros that are used for section delimiters can be adjusted.
+See <b>sections</b> under the <b>Set Commands</b>
+section.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[[</td><td width="76%">
+Move the cursor backwards to the beginning of a
+section.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+%</td><td width="76%">
+Move the cursor to the matching parenthesis or brace. This
+is very useful in C or lisp code. If the cursor is sitting
+on a <b>( ) {</b> or <b>}</b> the cursor is moved to the
+matching character at the other end of the section. If the
+cursor is not sitting on a brace or a parenthesis, <b>vi</b>
+searches forward until it finds one and then jumps to the
+match mate.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]H</td><td width="76%">
+If there is no count move the cursor to the top left
+position on the screen. If there is a count, then move the
+cursor to the beginning of the line &quot;cnt&quot; lines
+from the top of the screen. Mnemonic:
+<b>H</b>ome</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]L</td><td width="76%">
+If there is no count move the cursor to the beginning of the
+last line on the screen. If there is a count, then move the
+cursor to the beginning of the line &quot;cnt&quot; lines
+from the bottom of the screen. Mnemonic:
+<b>L</b>ast</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+M</td><td width="76%">
+Move the cursor to the beginning of the middle line on the
+screen. Mnemonic: <b>M</b>iddle</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+m&lt;a-z&gt;</td><td width="76%">
+This command does not move the cursor, but it <b>marks</b>
+the place in the file and the character
+&quot;&lt;a-z&gt;&quot; becomes the label for referring to
+this location in the file. See the next two commands.
+Mnemonic: <b>m</b>ark <b>NOTE:</b> The mark command is not a
+motion, and cannot be used as the target of commands such as
+delete.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+&lt;a-z&gt;</td><td width="76%">
+Move the cursor to the beginning of the line that is marked
+with the label &quot;&lt;a-z&gt;&quot;.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+&lt;a-z&gt;</td><td width="76%">
+Move the cursor to the exact position on the line that was
+marked with with the label
+&quot;&lt;a-z&gt;&quot;.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Move the cursor back to the beginning of the line where it
+was before the last &quot;non-relative&quot; move. A
+&quot;non-relative&quot; move is something such as a search
+or a jump to a specific line in the file, rather than moving
+the cursor or scrolling the screen.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Move the cursor back to the exact spot on the line where it
+was located before the last &quot;non-relative&quot;
+move.</td></table>
+<a name="4.3. Searches"></a>
+<h3>4.3. Searches</h3>
+
+<p>The following commands allow you to search for items in
+a file.</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]f{chr}</td><td width="76%">
+Search forward on the line for the next or &quot;cnt&quot;'th occurrence of the character &quot;chr&quot;. The cursor is placed <b>at</b> the character of interest. Mnemonic: <b>f</b>ind character</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]F{chr}</td><td width="76%">
+Search backwards on the line for the next or
+&quot;cnt&quot;'th occurrence of the character
+&quot;chr&quot;. The cursor is placed <b>at</b> the
+character of interest.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]t{chr}</td><td width="76%">
+Search forward on the line for the next or
+&quot;cnt&quot;'th occurrence of the character
+&quot;chr&quot;. The cursor is placed <b>just preceding</b>
+the character of interest. Mnemonic: move cursor up
+<b>t</b>o character</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]T{chr}</td><td width="76%">
+Search backwards on the line for the next or
+&quot;cnt&quot;'th occurrence of the character
+&quot;chr&quot;. The cursor is placed <b>just preceding</b>
+the character of interest.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt];</td><td width="76%">
+Repeat the last &quot;f&quot;, &quot;F&quot;, &quot;t&quot;
+or &quot;T&quot; command.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt],</td><td width="76%">
+Repeat the last &quot;f&quot;, &quot;F&quot;, &quot;t&quot;
+or &quot;T&quot; command, but in the opposite search
+direction. This is useful if you overshoot.</td></table>
+
+
+<p>[cnt]/[string]/&lt;nl&gt;<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Search forward for the next occurrence of
+&quot;string&quot;. Wrap around at the end of the file does
+occur. The final <b>&lt;/&gt;</b> is not
+required.</td></table>
+</p>
+
+
+<p>[cnt]?[string]?&lt;nl&gt;<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Search backwards for the next occurrence of
+&quot;string&quot;. If a count is specified, the count
+becomes the new window size. Wrap around at the beginning of
+the file does occur. The final <b>&lt;?&gt;</b> is not
+required.</td></table>
+</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+n</td><td width="76%">
+Repeat the last /[string]/ or ?[string]? search. Mnemonic: <b>n</b>ext occurrence.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+N</td><td width="76%">
+Repeat the last /[string]/ or ?[string]? search, but in the
+reverse direction.</td></table>
+
+<p>:g/[string]/[editor command]&lt;nl&gt;</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Using the <b>:</b> syntax it is possible to do global searches ala the standard UNIX &quot;ed&quot; editor.</td></table>
+<a name="4.4. Text Insertion"></a>
+<h3>4.4. Text Insertion</h3>
+
+<p>The following commands allow for the insertion of text.
+All multicharacter text insertions are terminated with an
+&lt;esc&gt; character. The last change can always be
+<b>undone</b> by typing a <b>u</b>. The text insert in
+insertion mode can contain newlines.</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+a{text}&lt;esc&gt;</td><td width="76%">
+Insert text immediately following the cursor position. Mnemonic: <b>a</b>ppend</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+A{text}&lt;esc&gt;</td><td width="76%">
+Insert text at the end of the current line. Mnemonic:
+<b>A</b>ppend</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+i{text}&lt;esc&gt;</td><td width="76%">
+Insert text immediately preceding the cursor position.
+Mnemonic: <b>i</b>nsert</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+I{text}&lt;esc&gt;</td><td width="76%">
+Insert text at the beginning of the current
+line.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+o{text}&lt;esc&gt;</td><td width="76%">
+Insert a new line after the line on which the cursor appears
+and insert text there. Mnemonic: <b>o</b>pen new
+line</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+O{text}&lt;esc&gt;</td><td width="76%">
+Insert a new line preceding the line on which the cursor
+appears and insert text there.</td></table>
+<a name="4.5. Text Deletion"></a>
+<h3>4.5. Text Deletion</h3>
+
+<p>The following commands allow the user to delete text in
+various ways. All changes can always be <b>undone</b> by
+typing the <b>u</b> command.</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]x</td><td width="76%">
+Delete the character or characters starting at the cursor position.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]X</td><td width="76%">
+Delete the character or characters starting at the character
+preceding the cursor position.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+D</td><td width="76%">
+Deletes the remainder of the line starting at the cursor.
+Mnemonic: <b>D</b>elete the rest of line</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]d{motion}</td><td width="76%">
+Deletes one or more occurrences of the specified motion. Any
+motion from sections 4.1 and 4.2 can be used here. The d can
+be stuttered (e.g. [cnt]dd) to delete cnt
+lines.</td></table>
+<a name="4.6. Text Replacement"></a>
+<h3>4.6. Text Replacement</h3>
+
+<p>The following commands allow the user to simultaneously
+delete and insert new text. All such actions can be
+<b>undone</b> by typing <b>u</b> following the command.</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+r&lt;chr&gt;</td><td width="76%">
+Replaces the character at the current cursor position with &lt;chr&gt;. This is a one character replacement. No &lt;esc&gt; is required for termination. Mnemonic: <b>r</b>eplace character</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+R{text}&lt;esc&gt;</td><td width="76%">
+Starts overlaying the characters on the screen with whatever
+you type. It does not stop until an &lt;esc&gt; is
+typed.</td></table>
+
+
+<p>[cnt]s{text}&lt;esc&gt;<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Substitute for &quot;cnt&quot; characters beginning at the
+current cursor position. A &quot;$&quot; will appear at the
+position in the text where the &quot;cnt&quot;'th character
+appears so you will know how much you are erasing. Mnemonic:
+<b>s</b>ubstitute</td></table>
+</p>
+
+
+<p>[cnt]S{text}&lt;esc&gt;<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Substitute for the entire current line (or lines). If no
+count is given, a &quot;$&quot; appears at the end of the
+current line. If a count of more than 1 is given, all the
+lines to be replaced are deleted before the insertion
+begins.</td></table>
+</p>
+
+
+<p>[cnt]c{motion}{text}&lt;esc&gt;<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Change the specified &quot;motion&quot; by replacing it with
+the insertion text. A &quot;$&quot; will appear at the end
+of the last item that is being deleted unless the deletion
+involves whole lines. Motion's can be any motion from
+sections 4.1 or 4.2. Stuttering the c (e.g. [cnt]cc) changes
+cnt lines.</td></table>
+</p>
+<a name="4.7. Moving Text"></a>
+<h3>4.7. Moving Text</h3>
+
+<p><b>Vi</b> provides a number of ways of moving chunks of
+text around. There are nine buffers into which each piece of
+text which is deleted or &quot;yanked&quot; is put in
+addition to the &quot;undo&quot; buffer. The most recent
+deletion or yank is in the &quot;undo&quot; buffer and also
+usually in buffer 1, the next most recent in buffer 2, and
+so forth. Each new deletion pushes down all the older
+deletions. Deletions older than 9 disappear. There is also a
+set of named registers, a-z, into which text can optionally
+be placed. If any delete or replacement type command is
+preceded by <b>&quot;&lt;a-z&gt;</b>, that named buffer will
+contain the text deleted after the command is executed. For
+example, <b>&quot;a3dd</b> will delete three lines starting
+at the current line and put them in buffer
+<b>&quot;a</b>.*</p>
+
+<p align=center></p>
+
+<p>There are two more basic commands and some variations
+useful in getting and putting text into a file.</p>
+
+<p>[&quot;&lt;a-z&gt;][cnt]y{motion}</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Yank the specified item or &quot;cnt&quot; items and put in the &quot;undo&quot; buffer or the specified buffer. The variety of &quot;items&quot; that can be yanked is the same as those that can be deleted with the &quot;d&quot; command or changed with the &quot;c&quot; command. In the same way that &quot;dd&quot; means delete the current line and &quot;cc&quot; means replace the current line, &quot;yy&quot; means yank the current line.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[&quot;&lt;a-z&gt;][cnt]Y</td><td width="76%">
+Yank the current line or the &quot;cnt&quot; lines starting
+from the current line. If no buffer is specified, they will
+go into the &quot;undo&quot; buffer, like any delete would.
+It is equivalent to &quot;yy&quot;. Mnemonic:
+<b>Y</b>ank</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[&quot;&lt;a-z&gt;]p</td><td width="76%">
+Put &quot;undo&quot; buffer or the specified buffer down
+<b>after</b> the cursor. If whole lines were yanked or
+deleted into the buffer, then they will be put down on the
+line following the line the cursor is on. If something else
+was deleted, like a word or sentence, then it will be
+inserted immediately following the cursor. Mnemonic:
+<b>p</b>ut buffer</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+It should be noted that text in the named buffers remains
+there when you start editing a new file with the <b>:e
+file&lt;esc&gt;</b> command. Since this is so, it is
+possible to copy or delete text from one file and carry it
+over to another file in the buffers. However, the undo
+buffer and the ability to undo are lost when changing
+files.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[&quot;&lt;a-z&gt;]P</td><td width="76%">
+Put &quot;undo&quot; buffer or the specified buffer down
+<b>before</b> the cursor. If whole lines where yanked or
+deleted into the buffer, then they will be put down on the
+line preceding the line the cursor is on. If something else
+was deleted, like a word or sentence, then it will be
+inserted immediately preceding the cursor.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]&gt;{motion}</td><td width="76%">
+The shift operator will right shift all the text from the
+line on which the cursor is located to the line where the
+<b>motion</b> is located. The text is shifted by one
+<b>shiftwidth</b>. (See section 6.) <b>&gt;&gt;</b> means
+right shift the current line or lines.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]&lt;{motion}</td><td width="76%">
+The shift operator will left shift all the text from the
+line on which the cursor is located to the line where the
+<b>item</b> is located. The text is shifted by one
+<b>shiftwidth</b>. (See section 6.) <b>&lt;&lt;</b> means
+left shift the current line or lines. Once the line has
+reached the left margin it is not further
+affected.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]={motion}</td><td width="76%">
+Prettyprints the indicated area according to <b>lisp</b>
+conventions. The area should be a lisp
+s-expression.</td></table>
+<a name="4.8. Miscellaneous Commands"></a>
+<h3>4.8. Miscellaneous Commands</h3>
+
+<p><b>Vi</b> has a number of miscellaneous commands that
+are very useful. They are:</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+ZZ</td><td width="76%">
+This is the normal way to exit from vi. If any changes have been made, the file is written out. Then you are returned to the shell.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+^L</td><td width="76%">
+Redraw the current screen. This is useful if someone
+&quot;write&quot;s you while you are in &quot;vi&quot; or if
+for any reason garbage gets onto the screen.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+^R</td><td width="76%">
+On dumb terminals, those not having the &quot;delete
+line&quot; function (the vt100 is such a terminal),
+<b>vi</b> saves redrawing the screen when you delete a line
+by just marking the line with an &quot;@&quot; at the
+beginning and blanking the line. If you want to actually get
+rid of the lines marked with &quot;@&quot; and see what the
+page looks like, typing a ^R will do this.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+.</td><td width="76%">
+&quot;Dot&quot; is a particularly useful command. It repeats
+the last text modifying command. Therefore you can type a
+command once and then to another place and repeat it by just
+typing &quot;.&quot;.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+u</td><td width="76%">
+Perhaps the most important command in the editor, u undoes
+the last command that changed the buffer. Mnemonic:
+<b>u</b>ndo</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+U</td><td width="76%">
+Undo all the text modifying commands performed on the
+current line since the last time you moved onto
+it.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[cnt]J</td><td width="76%">
+Join the current line and the following line. The &lt;nl&gt;
+is deleted and the two lines joined, usually with a space
+between the end of the first line and the beginning of what
+was the second line. If the first line ended with a
+&quot;period&quot;, then two spaces are inserted. A count
+joins the next cnt lines. Mnemonic: <b>J</b>oin
+lines</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+Q</td><td width="76%">
+Switch to <b>ex</b> editing mode. In this mode <b>vi</b>
+will behave very much like <b>ed</b>. The editor in this
+mode will operate on single lines normally and will not
+attempt to keep the &quot;window&quot; up to date. Once in
+this mode it is also possible to switch to the <b>open</b>
+mode of editing. By entering the command <b>[line
+number]open&lt;nl&gt;</b> you enter this mode. It is similar
+to the normal visual mode except the window is only
+<b>one</b> line long. Mnemonic: <b>Q</b>uit visual
+mode</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+^]</td><td width="76%">
+An abbreviation for a tag command. The cursor should be
+positioned at the beginning of a word. That word is taken as
+a tag name, and the tag with that name is found as if it had
+been typed in a :tag command.</td></table>
+
+<p>[cnt]!{motion}{UNIX
+cmd}&lt;nl&gt;<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Any UNIX filter (e.g. command that reads the standard input
+and outputs something to the standard output) can be sent a
+section of the current file and have the output of the
+command replace the original text. Useful examples are
+programs like <b>cb</b>, <b>sort</b>, and <b>nroff</b>. For
+instance, using <b>sort</b> it would be possible to sort a
+section of the current file into a new list. Using <b>!!</b>
+means take a line or lines starting at the line the cursor
+is currently on and pass them to the UNIX command.
+<b>NOTE:</b> To just escape to the shell for one command,
+use :!{cmd}&lt;nl&gt;, see section 5.</td></table>
+</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+z{cnt}&lt;nl&gt;</td><td width="76%">
+This resets the current window size to &quot;cnt&quot; lines and redraws the screen.</td></table>
+<a name="4.9. Special Insert Characters"></a>
+<h3>4.9. Special Insert Characters</h3>
+
+<p>There are some characters that have special meanings
+during insert modes. They are:</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+^V</td><td width="76%">
+During inserts, typing a ^V allows you to quote control characters into the file. Any character typed after the ^V will be inserted into the file.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+[^]^D or [0]^D</td><td width="76%">
+&lt;^D&gt; without any argument backs up one
+<b>shiftwidth</b>. This is necessary to remove indentation
+that was inserted by the <b>autoindent</b> feature.
+^&lt;^D&gt; temporarily removes all the autoindentation,
+thus placing the cursor at the left margin. On the next
+line, the previous indent level will be restored. This is
+useful for putting &quot;labels&quot; at the left margin.
+0&lt;^D&gt; says remove all autoindents and stay that way.
+Thus the cursor moves to the left margin and stays there on
+successive lines until &lt;tab&gt;'s are typed. As with the
+&lt;tab&gt;, the &lt;^D&gt; is only effective before any
+other &quot;non-autoindent&quot; controlling characters are
+typed. Mnemonic: <b>D</b>elete a shiftwidth</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+^W</td><td width="76%">
+If the cursor is sitting on a word, &lt;^W&gt; moves the
+cursor back to the beginning of the word, thus erasing the
+word from the insert. Mnemonic: erase
+<b>W</b>ord</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+&lt;bs&gt;</td><td width="76%">
+The backspace always serves as an erase during insert modes
+in addition to your normal &quot;erase&quot; character. To
+insert a &lt;bs&gt; into your file, use the &lt;^V&gt; to
+quote it.</td></table>
+<a name="5. : Commands"></a>
+<h2>5. : Commands</h2>
+
+<p>Typing a &quot;:&quot; during command mode causes
+<b>vi</b> to put the cursor at the bottom on the screen in
+preparation for a command. In the &quot;:&quot; mode,
+<b>vi</b> can be given most <b>ed</b> commands. It is also
+from this mode that you exit from <b>vi</b> or switch to
+different files. All commands of this variety are terminated
+by a &lt;nl&gt;, &lt;cr&gt;, or &lt;esc&gt;.</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+:w[!] [file]</td><td width="76%">
+Causes <b>vi</b> to write out the current text to the disk. It is written to the file you are editing unless &quot;file&quot; is supplied. If &quot;file&quot; is supplied, the write is directed to that file instead. If that file already exists, <b>vi</b> will not perform the write unless the &quot;!&quot; is supplied indicating you <i>really</i> want to destroy the older copy of the file.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+:q[!]</td><td width="76%">
+Causes <b>vi</b> to exit. If you have modified the file you
+are looking at currently and haven't written it out,
+<b>vi</b> will refuse to exit unless the &quot;!&quot; is
+supplied.</td></table>
+
+<p>:e[!] [+[cmd]] [file]</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Start editing a new file called &quot;file&quot; or start editing the current file over again. The command &quot;:e!&quot; says &quot;ignore the changes I've made to this file and start over from the beginning&quot;. It is useful if you really mess up the file. The optional &quot;+&quot; says instead of starting at the beginning, start at the &quot;end&quot;, or, if &quot;cmd&quot; is supplied, execute &quot;cmd&quot; first. Useful cases of this are where cmd is &quot;n&quot; (any integer) which starts at line number n, and &quot;/text&quot;, which searches for &quot;text&quot; and starts at the line where it is found.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+^^</td><td width="76%">
+Switch back to the place you were before your last tag
+command. If your last tag command stayed within the file, ^^
+returns to that tag. If you have no recent tag command, it
+will return to the same place in the previous file that it
+was showing when you switched to the current
+file.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+:n[!]</td><td width="76%">
+Start editing the next file in the argument list. Since
+<b>vi</b> can be called with multiple file names, the
+&quot;:n&quot; command tells it to stop work on the current
+file and switch to the next file. If the current file was
+modifies, it has to be written out before the &quot;:n&quot;
+will work or else the &quot;!&quot; must be supplied, which
+says discard the changes I made to the current
+file.</td></table>
+
+<p>:n[!] file [file file ...]</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+Replace the current argument list with a new list of files and start editing the first file in this new list.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+:r file</td><td width="76%">
+Read in a copy of &quot;file&quot; on the line after the
+cursor.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+:r !cmd</td><td width="76%">
+Execute the &quot;cmd&quot; and take its output and put it
+into the file after the current line.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+:!cmd</td><td width="76%">
+Execute any UNIX shell command.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+:ta[!] tag</td><td width="76%">
+<b>Vi</b> looks in the file named <b>tags</b> in the current
+directory. <b>Tags</b> is a file of lines in the
+format:</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="36%"></td><td width="64%">
+tag filename <b>vi</b>-search-command</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="36%"></td><td width="64%">
+If <b>vi</b> finds the tag you specified in the <b>:ta</b>
+command, it stops editing the current file if necessary and
+if the current file is up to date on the disk and switches
+to the file specified and uses the search pattern specified
+to find the &quot;tagged&quot; item of interest. This is
+particularly useful when editing multi-file C programs such
+as the operating system. There is a program called
+<b>ctags</b> which will generate an appropriate <b>tags</b>
+file for C and f77 programs so that by saying <b>:ta
+function&lt;nl&gt;</b> you will be switched to that
+function. It could also be useful when editing multi-file
+documents, though the <b>tags</b> file would have to be
+generated manually.</td></table>
+<a name="6. Special Arrangements for Startup"></a>
+<h2>6. Special Arrangements for Startup</h2>
+
+<p><b>Vi</b> takes the value of <b>$TERM</b> and looks up
+the characteristics of that terminal in the file
+<b>/etc/termcap</b>. If you don't know <b>vi</b>'s name for
+the terminal you are working on, look in
+<b>/etc/termcap</b>.</p>
+
+<p>When <b>vi</b> starts, it attempts to read the variable
+EXINIT from your environment.* If that exists, it takes the
+values in it as the default values for certain of its
+internal constants. See the section on &quot;Set
+Values&quot; for further details. If EXINIT doesn't exist
+you will get all the normal defaults.</p>
+
+<p align=center></p>
+
+<p>Should you inadvertently hang up the phone while inside
+<b>vi</b>, or should the computer crash, all may not be
+lost. Upon returning to the system, type:</p>
+<pre>     vi -r file
+</pre>
+
+<p>This will normally recover the file. If there is more
+than one temporary file for a specific file name, <b>vi</b>
+recovers the newest one. You can get an older version by
+recovering the file more than once. The command &quot;vi
+-r&quot; without a file name gives you the list of files
+that were saved in the last system crash (but <i>not</i> the
+file just saved when the phone was hung up).</p>
+<a name="7. Set Commands"></a>
+<h2>7. Set Commands</h2>
+
+<p><b>Vi</b> has a number of internal variables and
+switches which can be set to achieve special affects. These
+options come in three forms, those that are switches, which
+toggle from off to on and back, those that require a numeric
+value, and those that require an alphanumeric string value.
+The toggle options are set by a command of the form:</p>
+<pre>     :set option&lt;nl&gt;
+</pre>
+
+<p>and turned off with the command:</p>
+<pre>     :set nooption&lt;nl&gt;
+</pre>
+
+<p>Commands requiring a value are set with a command of the
+form:</p>
+<pre>     :set option=value&lt;nl&gt;
+</pre>
+
+<p>To display the value of a specific option type:</p>
+<pre>     :set option?&lt;nl&gt;
+</pre>
+
+<p>To display only those that you have changed type:</p>
+<pre>     :set&lt;nl&gt;
+</pre>
+
+<p>and to display the long table of all the settable
+parameters and their current values type:</p>
+<pre>     :set all&lt;nl&gt;
+</pre>
+
+<p>Most of the options have a long form and an
+abbreviation. Both are listed in the following table as well
+as the normal default value.</p>
+
+<p>To arrange to have values other than the default used
+every time you enter <b>vi</b>, place the appropriate
+<b>set</b> command in EXINIT in your environment, e.g.</p>
+<pre>     EXINIT='set ai aw terse sh=/bin/csh'
+     export EXINIT
+</pre>
+
+<p>or</p>
+<pre>     setenv EXINIT 'set ai aw terse sh=/bin/csh'
+</pre>
+
+<p>for <b>sh</b> and <b>csh</b>, respectively. These are
+usually placed in your .profile or .login. If you are
+running a system without environments (such as version 6)
+you can place the set command in the file .exrc in your home
+directory.</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+autoindent ai</td><td width="76%">
+Default: noai Type: toggle<br>
+When in autoindent mode, vi helps you indent code by starting each line in the same column as the preceding line. Tabbing to the right with &lt;tab&gt; or &lt;^T&gt; will move this boundary to the right, and it can be moved to the left with &lt;^D&gt;.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+autoprint ap</td><td width="76%">
+Default: ap Type: toggle<br>
+Causes the current line to be printed after each ex text
+modifying command. This is not of much interest in the
+normal <b>vi</b> visual mode.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+autowrite aw</td><td width="76%">
+Default: noaw type: toggle<br>
+Autowrite causes an automatic write to be done if there are
+unsaved changes before certain commands which change files
+or otherwise interact with the outside world. These commands
+are :!, :tag, :next, :rewind, ^^, and ^].</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+beautify bf</td><td width="76%">
+Default: nobf Type: toggle<br>
+Causes all control characters except &lt;tab&gt;,
+&lt;nl&gt;, and &lt;ff&gt; to be discarded.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+directory dir</td><td width="76%">
+Default: dir=/tmp Type: string<br>
+This is the directory in which <b>vi</b> puts its temporary
+file.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+errorbells eb</td><td width="76%">
+Default: noeb Type: toggle<br>
+Error messages are preceded by a &lt;bell&gt;.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+hardtabs ht</td><td width="76%">
+Default: hardtabs=8 Type: numeric<br>
+This option contains the value of hardware tabs in your
+terminal, or of software tabs expanded by the Unix
+system.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+ignorecase ic</td><td width="76%">
+Default: noic Type: toggle<br>
+All upper case characters are mapped to lower case in
+regular expression matching.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+lisp</td><td width="76%">
+Default: nolisp Type: toggle<br>
+Autoindent for <b>lisp</b> code. The commands <b>( ) [[</b>
+and <b>]]</b> are modified appropriately to affect
+s-expressions and functions.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+list</td><td width="76%">
+Default: nolist Type: toggle<br>
+All printed lines have the &lt;tab&gt; and &lt;nl&gt;
+characters displayed visually.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+magic</td><td width="76%">
+Default: magic Type: toggle<br>
+Enable the metacharacters for matching. These include <b>. *
+&lt; &gt; [string] [^string]</b> and
+<b>[&lt;chr&gt;-&lt;chr&gt;]</b>.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+number nu</td><td width="76%">
+Default: nonu Type: toggle<br>
+Each line is displayed with its line number.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+open</td><td width="76%">
+Default: open Type: toggle<br>
+When set, prevents entering open or visual modes from ex or
+edit. Not of interest from vi.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+optimize opt</td><td width="76%">
+Default: opt Type: toggle<br>
+Basically of use only when using the <b>ex</b> capabilities.
+This option prevents automatic &lt;cr&gt;s from taking
+place, and speeds up output of indented lines, at the
+expense of losing typeahead on some versions of
+UNIX.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+paragraphs para</td><td width="76%">
+Default: para=IPLPPPQPP bp Type: string<br>
+Each pair of characters in the string indicate <b>nroff</b>
+macros which are to be treated as the beginning of a
+paragraph for the <b>{</b> and <b>}</b> commands. The
+default string is for the <b>-ms</b> and <b>-mm</b> macros.
+To indicate one letter <b>nroff</b> macros, such as
+<b>.P</b> or <b>.H</b>, quote a space in for the second
+character position. For example:</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="36%"></td><td width="64%">
+:set paragraphs=P\ bp&lt;nl&gt;</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="36%"></td><td width="64%">
+would cause <b>vi</b> to consider <b>.P</b> and <b>.bp</b>
+as paragraph delimiters.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+prompt</td><td width="76%">
+Default: prompt Type: toggle<br>
+In <b>ex</b> command mode the prompt character <b>:</b> will
+be printed when <b>ex</b> is waiting for a command. This is
+not of interest from vi.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+redraw</td><td width="76%">
+Default: noredraw Type: toggle<br>
+On dumb terminals, force the screen to always be up to date,
+by sending great amounts of output. Useful only at high
+speeds.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+report</td><td width="76%">
+Default: report=5 Type: numeric<br>
+This sets the threshold for the number of lines modified.
+When more than this number of lines are modified, removed,
+or yanked, <b>vi</b> will report the number of lines changed
+at the bottom of the screen.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+scroll</td><td width="76%">
+Default: scroll={1/2 window} Type: numeric<br>
+This is the number of lines that the screen scrolls up or
+down when using the &lt;^U&gt; and &lt;^D&gt;
+commands.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+sections</td><td width="76%">
+Default: sections=SHNHH HU Type: string<br>
+Each two character pair of this string specify <b>nroff</b>
+macro names which are to be treated as the beginning of a
+section by the <b>]]</b> and <b>[[</b> commands. The default
+string is for the <b>-ms</b> and <b>-mm</b> macros. To enter
+one letter <b>nroff</b> macros, use a quoted space as the
+second character. See <b>paragraphs</b> for a fuller
+explanation.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+shell sh</td><td width="76%">
+Default: sh=from environment SHELL or /bin/sh Type:
+string<br>
+This is the name of the <b>sh</b> to be used for
+&quot;escaped&quot; commands.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+shiftwidth sw</td><td width="76%">
+Default: sw=8 Type: numeric<br>
+This is the number of spaces that a &lt;^T&gt; or &lt;^D&gt;
+will move over for indenting, and the amount &lt; and &gt;
+shift by.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+showmatch sm</td><td width="76%">
+Default: nosm Type: toggle<br>
+When a <b>)</b> or <b>}</b> is typed, show the matching
+<b>(</b> or <b>{</b> by moving the cursor to it for one
+second if it is on the current screen.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+slowopen slow</td><td width="76%">
+Default: terminal dependent Type: toggle<br>
+On terminals that are slow and unintelligent, this option
+prevents the updating of the screen some of the time to
+improve speed.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+tabstop ts</td><td width="76%">
+Default: ts=8 Type: numeric<br>
+&lt;tab&gt;s are expanded to boundaries that are multiples
+of this value.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+taglength tl</td><td width="76%">
+Default: tl=0 Type: numeric<br>
+If nonzero, tag names are only significant to this many
+characters.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+term</td><td width="76%">
+Default: (from environment <b>TERM</b>, else dumb) Type:
+string<br>
+This is the terminal and controls the visual displays. It
+cannot be changed when in &quot;visual&quot; mode, you have
+to Q to command mode, type a set term command, and do
+``vi.'' to get back into visual. Or exit vi, fix $TERM, and
+reenter. The definitions that drive a particular terminal
+type are found in the file <b>/etc/termcap</b>.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+terse</td><td width="76%">
+Default: terse Type: toggle<br>
+When set, the error diagnostics are short.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+warn</td><td width="76%">
+Default: warn Type: toggle<br>
+The user is warned if she/he tries to escape to the shell
+without writing out the current changes.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+window</td><td width="76%">
+Default: window={8 at 600 baud or less, 16 at 1200 baud, and
+screen size - 1 at 2400 baud or more} Type: numeric<br>
+This is the number of lines in the window whenever <b>vi</b>
+must redraw an entire screen. It is useful to make this size
+smaller if you are on a slow line.</td></table>
+
+<p>w300, w1200,
+w9600<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+These set window, but only within the corresponding speed
+ranges. They are useful in an EXINIT to fine tune window
+sizes. For example,</td></table>
+</p>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%"></td><td width="76%">
+<pre>     set w300=4 w1200=12
+</pre>causes a 4 lines window at speed up to 600 baud, a 12 line window at 1200 baud, and a full screen (the default) at over 1200 baud.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+wrapscan ws</td><td width="76%">
+Default: ws Type: toggle<br>
+Searches will wrap around the end of the file when is option
+is set. When it is off, the search will terminate when it
+reaches the end or the beginning of the file.</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+wrapmargin wm</td><td width="76%">
+Default: wm=0 Type: numeric<b><br>
+Vi</b> will automatically insert a &lt;nl&gt; when it finds
+a natural break point (usually a &lt;sp&gt; between words)
+that occurs within &quot;wm&quot; spaces of the right
+margin. Therefore with &quot;wm=0&quot; the option is off.
+Setting it to 10 would mean that any time you are within 10
+spaces of the right margin <b>vi</b> would be looking for a
+&lt;sp&gt; or &lt;tab&gt; which it could replace with a
+&lt;nl&gt;. This is convenient for people who forget to look
+at the screen while they type. (In version 3, wrapmargin
+behaves more like nroff, in that the boundary specified by
+the distance from the right edge of the screen is taken as
+the rightmost edge of the area where a break is allowed,
+instead of the leftmost edge.)</td></table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="24%">
+writeany wa</td><td width="76%">
+Default: nowa Type: toggle<b><br>
+Vi</b> normally makes a number of checks before it writes
+out a file. This prevents the user from inadvertently
+destroying a file. When the &quot;writeany&quot; option is
+enabled, <b>vi</b> no longer makes these
+checks.</td></table>
+<hr>
+</body>
+</html>

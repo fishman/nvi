@@ -1,0 +1,161 @@
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta name="Content-Style" content="text/css">
+<title></title>
+</head>
+<body>
+
+<hr>
+<!-- Creator     : groff version 1.17.2 -->
+<!-- CreationDate: Sun Nov 18 17:44:00 2007 -->
+
+<p align=center><b>Ex/Edit Command Summary (Version
+2.0)</b></p>
+
+<p><i><small><small>Ex</small></small></i>
+<small><small>and <i>edit</i> are text editors, used for
+creating and modifying files of text on the
+<small>UNIX</small> computer system. <i>Edit</i> is a
+variant of <i>ex</i> with features designed to make it less
+complicated to learn and use. In terms of command syntax and
+effect the editors are essentially identical, and this
+command summary applies to both.</small></small></p>
+
+<p><small><small>The summary is meant as a quick reference
+for users already acquainted with <i>edit</i> or <i>ex</i>.
+Fuller explanations of the editors are available in the
+documents <i>Edit: A Tutorial</i> (a self-teaching
+introduction) and the <i>Ex Reference Manual</i> (the
+comprehensive reference source for both <i>edit</i> and
+<i>ex</i>). Both of these writeups are available in the
+Computing Services Library.</small></small></p>
+
+<p><small><small>In the examples included with the summary,
+commands and text entered by the user are printed in
+<b>boldface</b> to distinguish them from responses printed
+by the computer.</small></small></p>
+
+<p><small><small><b>The Editor
+Buffer</b></small></small></p>
+
+<p><small><small>In order to perform its tasks the editor
+sets aside a temporary work space, called a <i>buffer</i>,
+separate from the user's permanent file. Before starting to
+work on an existing file the editor makes a copy of it in
+the buffer, leaving the original untouched. All editing
+changes are made to the buffer copy, which must then be
+written back to the permanent file in order to update the
+old version. The buffer disappears at the end of the editing
+session.</small></small></p>
+
+<p><small><small><b>Editing: Command and Text Input
+Modes</b></small></small></p>
+
+<p><small><small>During an editing session there are two
+usual modes of operation: <i>command</i> mode and <i>text
+input</i> mode. (This disregards, for the moment,
+<i>open</i> and <i>visual</i> modes, discussed below.) In
+command mode, the editor issues a colon prompt (:) to show
+that it is ready to accept and execute a command. In text
+input mode, on the other hand, there is no prompt and the
+editor merely accepts text to be added to the buffer. Text
+input mode is initiated by the commands <i>append</i>,
+<i>insert</i>, and <i>change</i>, and is terminated by
+typing a period as the first and only character on a
+line.</small></small></p>
+
+<p><small><small><b>Line Numbers and Command
+Syntax</b></small></small></p>
+
+<p><small><small>The editor keeps track of lines of text in
+the buffer by numbering them consecutively starting with 1
+and renumbering as lines are added or deleted. At any given
+time the editor is positioned at one of these lines; this
+position is called the <i>current line</i>. Generally,
+commands that change the contents of the buffer print the
+new current line at the end of their
+execution.</small></small></p>
+
+<p><small><small>Most commands can be preceded by one or
+two line-number addresses which indicate the lines to be
+affected. If one number is given the command operates on
+that line only; if two, on an inclusive range of lines.
+Commands that can take line-number prefixes also assume
+default prefixes if none are given. The default assumed by
+each command is designed to make it convenient to use in
+many instances without any line-number prefix. For the most
+part, a command used without a prefix operates on the
+current line, though exceptions to this rule should be
+noted. The <i>print</i> command by itself, for instance,
+causes one line, the current line, to be printed at the
+terminal.</small></small></p>
+
+<p><small><small>The summary shows the number of line
+addresses that can be prefixed to each command as well as
+the defaults assumed if they are omitted. For example,
+<i>(.,.)</i> means that up to 2 line-numbers may be given,
+and that if none is given the command operates on the
+current line. (In the address prefix notation, ``.'' stands
+for the current line and ``$'' stands for the last line of
+the buffer.) If no such notation appears, no line-number
+prefix may be used.</small></small></p>
+
+<p><small><small>Some commands take trailing information;
+only the more important instances of this are mentioned in
+the summary.</small></small></p>
+
+<p><small><small><b>Open and Visual
+Modes</b></small></small></p>
+
+<p><small><small>Besides command and text input modes,
+<i>ex</i> and <i>edit</i> provide on some CRT terminals
+other modes of editing, <i>open</i> and <i>visual</i>. In
+these modes the cursor can be moved to individual words or
+characters in a line. The commands then given are very
+different from the standard editor commands; most do not
+appear on the screen when typed. <i>An Introduction to
+Display Editing with Vi</i> provides a full
+discussion.</small></small></p>
+
+<p><small><small><b>Special
+Characters</b></small></small></p>
+
+<p><small><small>Some characters take on special meanings
+when used in context searches and in patterns given to the
+<i>substitute</i> command. For <i>edit</i>, these are ``^''
+and ``$'', meaning the beginning and end of a line,
+respectively. <i>Ex</i> has the following additional special
+characters:</small></small></p>
+
+<p align=center><small><small><b>. &amp; * [ ]
+~</b></small></small></p>
+
+<p><small><small>To use one of the special characters as
+its simple graphic representation rather than with its
+special meaning, precede it by a backslash (). The backslash
+always has a special meaning.</small></small></p>
+
+<p align=center><img src="grohtml-7914-1.png"></p>
+
+<p align=center><img src="grohtml-7914-2.png"></p>
+
+<p align=center><img src="grohtml-7914-3.png"></p>
+
+<p align=center><img src="grohtml-7914-4.png"></p>
+
+<p align=center></p>
+<pre>
+
+</pre>
+
+<p align=center><img src="grohtml-7914-6.png"></p>
+
+<p align=center><img src="grohtml-7914-7.png"></p>
+
+<p align=center><img src="grohtml-7914-8.png"></p>
+
+<p align=center><img src="grohtml-7914-9.png"></p>
+<hr>
+</body>
+</html>
